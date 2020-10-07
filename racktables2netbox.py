@@ -70,11 +70,11 @@ class REST(object):
         
         logger.debug("HTTP Request: {} - {} - {}".format(method, url, data))
 
-        request = requests.Request(method, url, data = data)
+        request = requests.Request(method, url, json = data)
         prepared_request = self.s.prepare_request(request)
         r = self.s.send(prepared_request)
 
-        logger.debug("HTTP Response: {status_code!s} - {reason} - {text}".format(**r))
+        logger.debug("HTTP Response: {} - {} - {}".format(r.status_code, r.reason, r.text))
 
         try:
             return r.json()
@@ -95,20 +95,24 @@ class REST(object):
 
         return r.text
 
-    # def post_subnet(self, data):
-    #     url = self.base_url + '/api/1.0/subnets/'
-    #     logger.info('Posting data to {}'.format(url))
-    #     self.uploader(data, url)
+    def post_subnet(self, data):
+        url = self.base_url + '/ipam/ip-addresses/'
+        logger.info('Posting data to {}'.format(url))
+        self.uploader(data, url)
 
-    # def post_ip(self, data):
-    #     url = self.base_url + '/api/ip/'
-    #     logger.info('Posting IP data to {}'.format(url))
-    #     self.uploader(data, url)
+    def post_ip(self, data):
+        url = self.base_url + '/ipam/ip-addresses/'
+        logger.info('Posting IP data to {}'.format(url))
+        self.uploader(data, url)
 
-    # def post_device(self, data):
-    #     url = self.base_url + '/api/1.0/device/'
-    #     logger.info('Posting device data to {}'.format(url))
-    #     self.uploader(data, url)
+    def post_device(self, data):
+        #42one variables
+        data.update({'tenant': tenant.id})
+        data.update({'site': site.id})
+
+        url = self.base_url + '/dcim/devices/'
+        logger.info('Posting device data to {}'.format(url))
+        r = self.uploader(data, url)
 
     # def post_location(self, data):
     #     url = self.base_url + '/api/1.0/location/'
@@ -120,81 +124,85 @@ class REST(object):
     #     logger.info('Posting room data to {}'.format(url))
     #     self.uploader(data, url)
 
-    # def post_rack(self, data):
-    #     url = self.base_url + '/api/1.0/racks/'
-    #     logger.info('Posting rack data to {}'.format(url))
-    #     response = self.uploader(data, url)
-    #     return response
+    def post_rack(self, data):
+        #42one variables
+        data.update({'tenant': tenant.id})
+        data.update({'site': site.id})
 
-    # def post_pdu(self, data):
-    #     url = self.base_url + '/api/1.0/pdus/'
-    #     logger.info('Posting PDU data to {}'.format(url))
-    #     response = self.uploader(data, url)
-    #     return response
+        url = self.base_url + '/dcim/racks/'
+        logger.info('Posting rack data to {}'.format(url))
+        response = self.uploader(data, url)
+        return response
 
-    # def post_pdu_model(self, data):
-    #     url = self.base_url + '/api/1.0/pdu_models/'
-    #     logger.info('Posting PDU model to {}'.format(url))
-    #     response = self.uploader(data, url)
-    #     return response
+    def post_pdu(self, data):
+        url = self.base_url + '/api/1.0/pdus/'
+        logger.info('Posting PDU data to {}'.format(url))
+        response = self.uploader(data, url)
+        return response
 
-    # def post_pdu_to_rack(self, data, rack):
-    #     url = self.base_url + '/api/1.0/pdus/rack/'
-    #     logger.info('Posting PDU to rack {}'.format(rack))
-    #     self.uploader(data, url)
+    def post_pdu_model(self, data):
+        url = self.base_url + '/api/1.0/pdu_models/'
+        logger.info('Posting PDU model to {}'.format(url))
+        response = self.uploader(data, url)
+        return response
 
-    # def post_hardware(self, data):
-    #     url = self.base_url + '/api/1.0/hardwares/'
-    #     logger.info('Adding hardware data to {}'.format(url))
-    #     self.uploader(data, url)
-
-    # def post_device2rack(self, data):
-    #     url = self.base_url + '/api/1.0/device/rack/'
-    #     logger.info('Adding device to rack at {}'.format(url))
-    #     self.uploader(data, url)
-
-    def post_building(self, data):
-        url = self.base_url + '/dcim/sites/'
-        logger.info('Uploading building data to {}'.format(url))
+    def post_pdu_to_rack(self, data, rack):
+        url = self.base_url + '/dcim/power-connections/'
+        logger.info('Posting PDU to rack {}'.format(rack))
         self.uploader(data, url)
 
-    # def post_switchport(self, data):
-    #     url = self.base_url + '/api/1.0/switchports/'
-    #     logger.info('Uploading switchports data to {}'.format(url))
+    def post_hardware(self, data):
+        url = self.base_url + '/dcim/device-types/'
+        logger.info('Adding hardware data to {}'.format(url))
+        self.uploader(data, url)
+
+    def post_device2rack(self, data):
+        url = self.base_url + '/dcim/devices/rack/'
+        logger.info('Adding device to rack at {}'.format(url))
+        self.uploader(data, url)
+
+    # def post_building(self, data):
+    #     url = self.base_url + '/dcim/sites/'
+    #     logger.info('Uploading building data to {}'.format(url))
     #     self.uploader(data, url)
 
-    # def post_patch_panel(self, data):
-    #     url = self.base_url + '/api/1.0/patch_panel_models/'
-    #     logger.info('Uploading patch panels data to {}'.format(url))
-    #     self.uploader(data, url)
+    def post_switchport(self, data):
+        url = self.base_url + '/dcim/interfaces/'
+        logger.info('Uploading switchports data to {}'.format(url))
+        self.uploader(data, url)
 
-    # def post_patch_panel_module_models(self, data):
-    #     url = self.base_url + '/api/1.0/patch_panel_module_models/'
-    #     logger.info('Uploading patch panels modules data to {}}'.format(url))
-    #     self.uploader(data, url)
+    def post_patch_panel(self, data):
+        url = self.base_url + '/api/1.0/patch_panel_models/'
+        logger.info('Uploading patch panels data to {}'.format(url))
+        self.uploader(data, url)
 
-    # def get_pdu_models(self):
-    #     url = self.base_url + '/api/1.0/pdu_models/'
-    #     logger.info('Fetching PDU models from {}'.format(url))
-    #     self.fetcher(url)
+    def post_patch_panel_module_models(self, data):
+        url = self.base_url + '/api/1.0/patch_panel_module_models/'
+        logger.info('Uploading patch panels modules data to {}}'.format(url))
+        self.uploader(data, url)
 
-    # def get_racks(self):
-    #     url = self.base_url + '/api/1.0/racks/'
-    #     logger.info('Fetching racks from {}'.format(url))
-    #     ata = self.fetcher(url)
-    #     return data
+    def get_pdu_models(self):
+        url = self.base_url + '/api/1.0/pdu_models/'
+        logger.info('Fetching PDU models from {}'.format(url))
+        self.fetcher(url)
 
-    # def get_devices(self):
-    #     url = self.base_url + '/api/1.0/devices/'
-    #     logger.info('Fetching devices from {}'.format(url))
-    #     data = self.fetcher(url)
-    #     return data
+    def get_racks(self):
+        url = self.base_url + '/dcim/racks/'
+        logger.info('Fetching racks from {}'.format(url))
+        ata = self.fetcher(url)
+        return data
 
-    # def get_buildings(self):
-    #     url = self.base_url + '/api/dcim/sites/'
-    #     logger.info('Fetching buildings from {}'.format(url))
-    #     data = self.fetcher(url)
-    #     return data
+    def get_devices(self):
+        url = self.base_url + '/dcim/devices/'
+        logger.info('Fetching devices from {}'.format(url))
+        data = self.fetcher(url)
+        return data
+
+    def get_buildings(self):
+        url = self.base_url + '/dcim/sites/'
+        logger.info('Fetching buildings from {}'.format(url))
+        data = self.fetcher(url)
+        return data
 
     # def get_rooms(self):
     #     url = self.base_url + '/api/1.0/rooms/'
@@ -249,8 +257,8 @@ class DB(object):
         adrese = []
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+
+        with self.con.cursor() as cur:
             q = 'SELECT * FROM IPv4Address WHERE IPv4Address.name != ""'
             cur.execute(q)
             ips = cur.fetchall()
@@ -264,14 +272,14 @@ class DB(object):
             ip = self.convert_ip(ip_raw)
             adrese.append(ip)
 
-            net.update({'ipaddress': ip})
+            net.update({'address': ip})
             msg = 'IP Address: %s' % ip
             logger.info(msg)
 
             net.update({'tag': name})
             msg = 'Label: %s' % name
             logger.info(msg)
-            # rest.post_ip(net)
+            rest.post_ip(net)
 
     def get_subnets(self):
         """
@@ -281,8 +289,8 @@ class DB(object):
         subs = {}
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+
+        with self.con.cursor() as cur:
             q = "SELECT * FROM IPv4Network"
             cur.execute(q)
             subnets = cur.fetchall()
@@ -295,7 +303,7 @@ class DB(object):
             subs.update({'network': subnet})
             subs.update({'mask_bits': str(mask)})
             subs.update({'name': name})
-            # rest.post_subnet(subs)        
+            rest.post_subnet(subs)        
 
     def get_infrastructure(self):
         """
@@ -312,8 +320,7 @@ class DB(object):
             self.connect()
 
         # ============ BUILDINGS AND ROOMS ============
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT id, name, parent_id, parent_name FROM Location"""
             cur.execute(q)
             raw = cur.fetchall()
@@ -325,12 +332,6 @@ class DB(object):
                 else:
                     rooms_map.update({location_name: parent_name})
 
-        print("Sites:")
-        pp.pprint(sites_map)
-        
-        pp.pprint(rooms_map)
-
-        print("Rack Groups:")
         for room, parent in list(rooms_map.items()):
             if parent in sites_map.values():
                 if room in rooms_map.values():
@@ -352,53 +353,50 @@ class DB(object):
         for site_id, site_name in list(sites_map.items()):
             if site_name not in rooms_map.values():
                 rackgroup = {}
-                rackgroup.update({'site': site_name})
+                rackgroup.update({'site': site.id})
                 rackgroup.update({'name': site_name})
 
                 rackgroups.append(rackgroup)
 
-        pp.pprint(rackgroups)
-
-        
-        # upload rooms
+        # #upload rooms
         # buildings = json.loads((rest.get_buildings()))['buildings']
-        
-        #     for room, parent in list(rooms_map.items()):
-        #         roomdata = {}
-        #         roomdata.update({'name': room})
-        #         roomdata.update({'building': parent})
-        #         rest.post_room(roomdata)
+        # for room, parent in list(rooms_map.items()):
+        #     roomdata = {}
+        #     roomdata.update({'name': room})
+        #     roomdata.update({'building': parent})
+        #     rest.post_room(roomdata)
 
-        # # ============ ROWS AND RACKS ============
-        # with self.con:
-        #     cur = self.con.cursor()
-        #     q = """SELECT id, name ,height, row_id, row_name, location_id, location_name from Rack;"""
-        #     cur.execute(q)
-        #     raw = cur.fetchall()
+        # ============ ROWS AND RACKS ============
+        with self.con.cursor() as cur:
+            q = """SELECT id, name ,height, row_id, row_name, location_id, location_name from Rack;"""
+            cur.execute(q)
+            raw = cur.fetchall()
 
-        # for rec in raw:
-        #     rack_id, rack_name, height, row_id, row_name, location_id, location_name = rec
+        for rec in raw:
+            rack_id, rack_name, height, row_id, row_name, location_id, location_name = rec
 
-        #     rows_map.update({row_name: location_name})
+            rows_map.update({row_name: location_name})
 
-        #     # prepare rack data. We will upload it a little bit later
-        #     rack = {}
-        #     rack.update({'name': rack_name})
-        #     rack.update({'size': height})
-        #     rack.update({'rt_id': rack_id})  # we will remove this later
-        #     if config['Misc']['ROW_AS_ROOM']:
-        #         rack.update({'room': row_name})
-        #         rack.update({'building': location_name})
-        #     else:
-        #         row_name = row_name[:10]  # there is a 10char limit for row name
-        #         rack.update({'row': row_name})
-        #         if location_name in rooms_map:
-        #             rack.update({'room': location_name})
-        #             building_name = rooms_map[location_name]
-        #             rack.update({'building': building_name})
-        #         else:
-        #             rack.update({'building': location_name})
-        #     racks.append(rack)
+            # prepare rack data. We will upload it a little bit later
+            rack = {}
+            rack.update({'name': rack_name})
+            rack.update({'size': height})
+            rack.update({'rt_id': rack_id})  # we will remove this later
+            if config['Misc']['ROW_AS_ROOM']:
+                #rack.update({'room': row_name})
+                rack.update({'site': location_name})
+            else:
+                row_name = row_name[:10]  # there is a 10char limit for row name
+                rack.update({'row': row_name})
+                # if location_name in rooms_map:
+                #     #rack.update({'room': location_name})
+                #     rack.update({'site': rooms_map[location_name]})
+                # else:
+                #     rack.update({'site': location_name})
+
+            #42one only one site
+            rack.update({'site': site.id})
+            racks.append(rack)
 
         # # upload rows as rooms
         # if config['Misc']['ROW_AS_ROOM']:
@@ -411,19 +409,26 @@ class DB(object):
         #         roomdata.update({'building': parent})
         #         rest.post_room(roomdata)
 
-        # # upload racks
-        # if config['Log']['DEBUG']:
-        #     msg = ('Racks', str(racks))
-        #     logger.debug(msg)
-        # for rack in racks:
-        #     rt_rack_id = rack['rt_id']
-        #     del rack['rt_id']
-        #     response = rest.post_rack(rack)
-        #     d42_rack_id = response['msg'][1]
+        # Get racks which already added
+        exist_racknames = [x.name for x in exist_racks]
 
-        #     self.rack_id_map.update({rt_rack_id: d42_rack_id})
+        # upload racks
+        if config['Log']['DEBUG']:
+            msg = ('Racks', str(racks))
+            logger.debug(msg)
+        for rack in racks:
+            if rack['name'] not in exist_racknames:
+                rt_rack_id = rack['rt_id']
+                del rack['rt_id']
+                response = rest.post_rack(rack)
+                d42_rack_id = response["id"]
 
-        # self.all_ports = self.get_ports()
+                self.rack_id_map.update({rt_rack_id: d42_rack_id})
+            else:
+                self.rack_id_map.update({rack['rt_id']: exist_racks[exist_racknames.index(rack['name'])].id})
+                print(rack['name'], " is exist")
+
+        self.all_ports = self.get_ports()
 
     def get_hardware(self):
         """
@@ -432,9 +437,9 @@ class DB(object):
         """
         if not self.con:
             self.connect()
-        with self.con:
+
+        with self.con.cursor() as cur:
             # get hardware items (except PDU's)
-            cur = self.con.cursor()
             q = """SELECT
                     Object.id,Object.name as Description, Object.label as Name,
                     Object.asset_no as Asset,Dictionary.dict_value as Type
@@ -489,13 +494,21 @@ class DB(object):
                 floor, height, depth, mount = size
                 # patching height
                 height = hwsize_map[data_id]
-                hwddata.update({'notes': description})
-                hwddata.update({'type': 1})
+                dev_type=device_type
+                if model[:48] != "noname/unknown":
+                    dev_types=netbox.dcim.device_types.filter(model=model[:48])
+                    if dev_type:
+                        dev_type=dev_types[0]
+
+                hwddata.update({'name': description})
+                hwddata.update({'device_type': dev_type.id})
                 hwddata.update({'size': height})
                 hwddata.update({'depth': depth})
-                hwddata.update({'name': model[:48]})
+                hwddata.update({'device_role': device_role.id })
+                hwddata.update({'notes': model[:48]})
                 hwddata.update({'manufacturer': vendor})
-                # rest.post_hardware(hwddata)
+                print(hwddata)
+                rest.post_hardware(hwddata)
 
     def get_hardware_size(self, data_id):
         """
@@ -509,9 +522,8 @@ class DB(object):
         """
         if not self.con:
             self.connect()
-        with self.con:
+        with self.con.cursor() as cur:
             # get hardware items
-            cur = self.con.cursor()
             q = """SELECT unit_no,atom FROM RackSpace WHERE object_id = %s""" % data_id
             cur.execute(q)
         data = cur.fetchall()
@@ -576,20 +588,18 @@ class DB(object):
         :rtype : object
         """
         hwddata = {}
-        hwddata.update({'type': 1})
         if height:
-            hwddata.update({'size': height})
+            hwddata.update({'u_height': height})
         if depth:
             hwddata.update({'depth': depth})
-        if name:
-            hwddata.update({'name': name[:48]})
-            # rest.post_hardware(hwddata)
+        hwddata.update({'model': name[:48]})
+        hwddata.update({'slug': name[:48]})
+        rest.post_hardware(hwddata)
 
     def get_vmhosts(self):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT id, name FROM Object WHERE objtype_id='1505'"""
             cur.execute(q)
             raw = cur.fetchall()
@@ -604,13 +614,12 @@ class DB(object):
             self.vm_hosts.update({host_id: name})
             dev.update({'name': name})
             dev.update({'is_it_virtual_host': 'yes'})
-            # rest.post_device(dev)
+            rest.post_device(dev)
 
     def get_chassis(self):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT id, name FROM Object WHERE objtype_id='1502'"""
             cur.execute(q)
             raw = cur.fetchall()
@@ -625,7 +634,7 @@ class DB(object):
             self.chassis.update({host_id: name})
             dev.update({'name': name})
             dev.update({'is_it_blade_host': 'yes'})
-            # rest.post_device(dev)
+            rest.post_device(dev)
 
     def get_container_map(self):
         """
@@ -635,8 +644,7 @@ class DB(object):
         """
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT parent_entity_id AS container_id, child_entity_id AS object_id
                     FROM EntityLink WHERE child_entity_type='object' AND parent_entity_type = 'object'"""
             cur.execute(q)
@@ -648,15 +656,14 @@ class DB(object):
     def get_devices(self):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             # get object IDs
             q = 'SELECT id FROM Object'
             cur.execute(q)
             idsx = cur.fetchall()
         ids = [x[0] for x in idsx]
 
-        with self.con:
+        with self.con.cursor() as cur:
             for dev_id in ids:
                 q = """Select
                             Object.objtype_id,
@@ -667,6 +674,8 @@ class DB(object):
                             Dictionary.dict_value as Type,
                             Object.comment as Comment,
                             RackSpace.rack_id as RackID,
+                            RackSpace.unit_no as unit,
+                            RackSpace.atom as atom,
                             Rack.name as rack_name,
                             Rack.row_name,
                             Rack.location_id,
@@ -681,7 +690,8 @@ class DB(object):
                             LEFT JOIN Rack ON RackSpace.rack_id = Rack.id
                             LEFT JOIN Location ON Rack.location_id = Location.id
                             WHERE Object.id = %s
-                            AND Object.objtype_id not in (2,9,1505,1560,1561,1562,50275)""" % dev_id
+                            AND Object.objtype_id not in (2,9,1505,1560,1561,1562,50275)
+                            AND RackSpace.atom != 'interior' """ % dev_id
 
                 cur.execute(q)
                 data = cur.fetchall()
@@ -690,7 +700,6 @@ class DB(object):
 
     def process_data(self, data, dev_id):
         devicedata = {}
-        device2rack = {}
         name = None
         opsys = None
         hardware = None
@@ -701,27 +710,27 @@ class DB(object):
 
         for x in data:
             dev_type, rdesc, rname, rasset, rattr_name, rtype, \
-            rcomment, rrack_id, rrack_name, rrow_name, \
+            rcomment, rrack_id, rrack_unit, rrack_atom, rrack_name, rrow_name, \
             rlocation_id, rlocation_name, rparent_name = x
 
             name = x[1]
-            note = x[-7]
+            note = x[-9]
 
             if 'Operating System' in x:
-                opsys = x[-8]
+                opsys = x[-10]
                 if '%GSKIP%' in opsys:
                     opsys = opsys.replace('%GSKIP%', ' ')
                 if '%GPASS%' in opsys:
                     opsys = opsys.replace('%GPASS%', ' ')
             if 'SW type' in x:
-                opsys = x[-8]
+                opsys = x[-10]
                 if '%GSKIP%' in opsys:
                     opsys = opsys.replace('%GSKIP%', ' ')
                 if '%GPASS%' in opsys:
                     opsys = opsys.replace('%GPASS%', ' ')
 
             if 'Server Hardware' in x:
-                hardware = x[-8]
+                hardware = x[-10]
                 if '%GSKIP%' in hardware:
                     hardware = hardware.replace('%GSKIP%', ' ')
                 if '%GPASS%' in hardware:
@@ -730,7 +739,7 @@ class DB(object):
                     hardware = hardware.replace('\t', ' ')
 
             if 'HW type' in x:
-                hardware = x[-8]
+                hardware = x[-10]
                 if '%GSKIP%' in hardware:
                     hardware = hardware.replace('%GSKIP%', ' ')
                 if '%GPASS%' in hardware:
@@ -747,8 +756,12 @@ class DB(object):
         if name:
             # set device data
             devicedata.update({'name': name})
+            dt=device_type
             if hardware:
-                devicedata.update({'hardware': hardware[:48]})
+                dts=netbox.dcim.device_types.filter(model=hardware.split()[-1])
+                if dts:
+                    dt=dts[0]                
+                devicedata.update({'device_type': dt.id})
             if opsys:
                 devicedata.update({'os': opsys})
             if note:
@@ -791,69 +804,78 @@ class DB(object):
                     floor = 'auto'
                 if not hardware:
                     hardware = 'generic' + str(height) + 'U'
-                self.add_hardware(height, depth, hardware)
+                # self.add_hardware(height, depth, hardware)
+                print("It is Hardware:",height, depth, hardware)
 
+            # exist_devices = netbox.dcim.devices.filter(site="bt-berlin")
+            # exist_device_names = [x.name for x in exist_devices]
+            # print(exist_device_names)
             # upload device
             if devicedata:
                 if hardware and dev_type != 1504:
-                    devicedata.update({'hardware': hardware[:48]})
+                    devicedata.update({'device_type': dt.id})
 
                 # set default type for racked devices
-                if 'type' not in devicedata and d42_rack_id and floor:
-                    devicedata.update({'type': 'physical'})
+                # if 'type' not in devicedata and d42_rack_id and floor:
+                #     devicedata.update({'type': 'physical'})
+                # if there is a device, we can try to mount it to the rack
+                if dev_type != 1504 and dt != device_type and d42_rack_id and floor:  # rack_id is D42 rack id
+                    devicedata.update({'rack': d42_rack_id})
+                    devicedata.update({'position': rrack_unit})
+                    devicedata.update({'face': rrack_atom})
 
+                devicedata.update({'device_role': device_role.id})
+                print("devicedata: ", devicedata)
                 rest.post_device(devicedata)
 
-                # update ports
-                if dev_type == 8 or dev_type == 4 or dev_type == 445 or dev_type == 1055:
-                    ports = self.get_ports_by_device(self.all_ports, dev_id)
-                    if ports:
-                        for item in ports:
-                            switchport_data = {
-                                'port': item[0],
-                                'switch': name,
-                                'label': item[1]
-                            }
+                exist_devices = netbox.dcim.devices.filter(site="bt-berlin")
 
-                            get_links = self.get_links(item[3])
-                            if get_links:
-                                device_name = self.get_device_by_port(get_links[0])
-                                switchport_data.update({'device': device_name})
-                                switchport_data.update({'remote_device': device_name})
-                                # switchport_data.update({'remote_port': self.get_port_by_id(self.all_ports, get_links[0])})
+                # # update ports
+                # if dev_type == 8 or dev_type == 4 or dev_type == 445 or dev_type == 1055:
+                #     ports = self.get_ports_by_device(self.all_ports, dev_id)
+                #     if ports:
+                #         for item in ports:
+                #             switchport_data = {
+                #                 'name': item[0],
+                #                 'device': name,
+                #                 'description': item[1],
+                #                 'type': item[2].lower()
+                #             }
 
-                                rest.post_switchport(switchport_data)
+                #             get_links = self.get_links(item[3])
+                #             if get_links:
+                #                 device_name = self.get_device_by_port(get_links[0])
+                #                 switchport_data.update({'device': device_name})
+                #                 switchport_data.update({'remote_device': device_name})
+                #                 # switchport_data.update({'remote_port': self.get_port_by_id(self.all_ports, get_links[0])})
 
-                                # reverse connection
-                                device_name = self.get_device_by_port(get_links[0])
-                                switchport_data = {
-                                    'port': self.get_port_by_id(self.all_ports, get_links[0]),
-                                    'switch': device_name
-                                }
+                #                 print("New Link:",switchport_data)
 
-                                switchport_data.update({'device': name})
-                                switchport_data.update({'remote_device': name})
-                                switchport_data.update({'remote_port': item[0]})
+                #                 rest.post_switchport(switchport_data)
 
-                                rest.post_switchport(switchport_data)
-                            else:
-                                rest.post_switchport(switchport_data)
+                #                 # reverse connection
+                #                 device_name = self.get_device_by_port(get_links[0])
+                #                 switchport_data = {
+                #                     'port': self.get_port_by_id(self.all_ports, get_links[0]),
+                #                     'switch': device_name
+                #                 }
 
-                # if there is a device, we can try to mount it to the rack
-                if dev_type != 1504 and d42_rack_id and floor:  # rack_id is D42 rack id
-                    device2rack.update({'device': name})
-                    if hardware:
-                        device2rack.update({'hw_model': hardware[:48]})
-                    device2rack.update({'rack_id': d42_rack_id})
-                    device2rack.update({'start_at': floor})
+                #                 switchport_data.update({'device': name})
+                #                 switchport_data.update({'remote_device': name})
+                #                 switchport_data.update({'remote_port': item[0]})
 
-                    rest.post_device2rack(device2rack)
-                else:
-                    if dev_type != 1504 and d42_rack_id is not None:
-                        msg = '\n-----------------------------------------------------------------------\
-                        \n[!] INFO: Cannot mount device "%s" (RT id = %d) to the rack.\
-                        \n\tFloor returned from "get_hardware_size" function was: %s' % (name, dev_id, str(floor))
-                        logger.info(msg)
+                #                 rest.post_switchport(switchport_data)
+                #                 print("Other link side: " , switchport_data)
+                #             else:
+                #                 rest.post_switchport(switchport_data)
+                #                 print("switchport_data: " , switchport_data)
+
+                # else:
+                #     if dev_type != 1504 and d42_rack_id is not None:
+                #         msg = '\n-----------------------------------------------------------------------\
+                #         \n[!] INFO: Cannot mount device "%s" (RT id = %d) to the rack.\
+                #         \n\tFloor returned from "get_hardware_size" function was: %s' % (name, dev_id, str(floor))
+                #         logger.info(msg)
             else:
                 msg = '\n-----------------------------------------------------------------------\
                 \n[!] INFO: Device %s (RT id = %d) cannot be uploaded. Data was: %s' % (name, dev_id, str(devicedata))
@@ -868,9 +890,8 @@ class DB(object):
     def get_device_to_ip(self):
         if not self.con:
             self.connect()
-        with self.con:
+        with self.con.cursor() as cur:
             # get hardware items (except PDU's)
-            cur = self.con.cursor()
             q = """SELECT
                     IPv4Allocation.ip,IPv4Allocation.name,
                     Object.name as hostname
@@ -887,7 +908,7 @@ class DB(object):
             devmap = {}
             rawip, nic_name, hostname = line
             ip = self.convert_ip(rawip)
-            devmap.update({'ipaddress': ip})
+            devmap.update({'address': ip})
             devmap.update({'device': hostname})
             if nic_name:
                 devmap.update({'tag': nic_name})
@@ -896,8 +917,7 @@ class DB(object):
     def get_pdus(self):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT
                     Object.id,Object.name as Name, Object.asset_no as Asset,
                     Object.comment as Comment, Dictionary.dict_value as Type, RackSpace.atom as Position,
@@ -1023,8 +1043,7 @@ class DB(object):
     def get_patch_panels(self):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT
                    id,
                    name,
@@ -1082,8 +1101,7 @@ class DB(object):
     def get_ports(self):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT
                     name,
                     label,
@@ -1118,8 +1136,7 @@ class DB(object):
     def get_device_by_port(self, port_id):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT
                     name
                     FROM Object
@@ -1134,8 +1151,7 @@ class DB(object):
     def get_links(self, port_id):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT
                     porta,
                     portb
@@ -1147,8 +1163,7 @@ class DB(object):
         if data:
             return data[0]
         else:
-            with self.con:
-                cur = self.con.cursor()
+            with self.con.cursor() as cur:
                 q = """SELECT
                         portb,
                         porta
@@ -1165,8 +1180,7 @@ class DB(object):
     def get_rack_id_for_zero_us(self, pdu_id):
         if not self.con:
             self.connect()
-        with self.con:
-            cur = self.con.cursor()
+        with self.con.cursor() as cur:
             q = """SELECT
                     EntityLink.parent_entity_id
                     FROM EntityLink
@@ -1210,24 +1224,37 @@ if __name__ == '__main__':
 
     netbox = pynetbox.api(config['NetBox']['NETBOX_HOST'], token=config['NetBox']['NETBOX_TOKEN'])
 
-    tenant_groups = netbox.tenancy.tenant_groups.all()
+    #tenant_groups = netbox.tenancy.tenant_groups.all()
+    tenant = netbox.tenancy.tenants.get(name=config['NetBox']['NETBOX_TENANT'])
+    site = netbox.dcim.sites.get(name="bt-berlin")
+    exist_racks = netbox.dcim.racks.filter(site="bt-berlin")
+    exist_devices = netbox.dcim.devices.filter(site="bt-berlin")
 
-    print()
+    device_role = netbox.dcim.device_roles.get(name="Infrastructure")
+    device_type = netbox.dcim.device_types.get(model="unknown")
+
+    print("Tenant:", tenant.id)
+    print("Site:", site.id)
+    print("Role:", device_role.id)
+    print("Device_type:",device_type.id)
+    print("Exist Devices:",exist_devices)
     
-    
-    rest = REST()    
+    rest = REST()
+
     racktables = DB()
     # racktables.get_subnets()
     # racktables.get_ips()
     racktables.get_infrastructure()
+    exist_racks = netbox.dcim.racks.filter(site="bt-berlin")
+
     # racktables.get_hardware()
     # racktables.get_container_map()
     # racktables.get_chassis()
+    racktables.get_devices()
     # racktables.get_vmhosts()
     # racktables.get_device_to_ip()
     # racktables.get_pdus()
     # racktables.get_patch_panels()
-    # racktables.get_devices()
 
     migrator = Migrator()
 
