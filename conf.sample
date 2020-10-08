@@ -16,6 +16,7 @@ DEBUG     = True  # write debug log
 [NetBox]
 NETBOX_TOKEN = NETBOX_API_TOKEN
 NETBOX_HOST  = https://netbox.example.net
+NETBOX_TENANT = MY-DEFAULT-TENANT
 # ====== Other settings ========= #
 [Misc]
 CHILD_AS_BUILDING = True  # use RTs sub-location as Device42 building. If False, use it as a Device42 room.
